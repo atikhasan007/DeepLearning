@@ -2,6 +2,9 @@ import cv2
 import numpy as np 
 
 
+#Canny edge detector ছবির উজ্জ্বলতার পরিবর্তন দেখে edge বের করে।
+
+
 #contours er through te object detection or object tract 
 
 path = '/home/atik/Desktop/collaborative_project/images.png'
@@ -21,14 +24,21 @@ imgCanny = cv2.Canny(imgBlur, 50, 50) # canny for edge detecor #lower threshold 
 
 
 
+
 contours, hierarchy = cv2.findContours(imgCanny, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+# imgCanny → input edge map
+# RETR_EXTERNAL → শুধু outer contour নেয়
+# CHAIN_APPROX_NONE → সব পয়েন্ট রাখে
 #print(contours)
-print("Total {} objects found :", format(len(contours)))
+print("Total {} objects found :", format(len(contours)))  #total object boundary 
 for cnt in contours:
     area = cv2.contourArea(cnt)
     
     if area > 10:
-        cv2.drawContours(imgContour, cnt , -1 , (255,0,0),3)
+        cv2.drawContours(imgContour, cnt , -1 , (255,0,0),3) #drawContours() → contour লাইন আঁকে
+        # arcLength() → contour এর perimeter বের করে
+        # approxPolyDP() → shape কে smooth করে (corner count)
+        # boundingRect() → contour এর চারপাশে rectangle box বের করে
         peri = cv2.arcLength(cnt, True)
         #print(peri)
 

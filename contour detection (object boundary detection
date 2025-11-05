@@ -1,0 +1,42 @@
+import cv2
+import numpy as np 
+
+
+#contours er through te object detection or object tract 
+
+path = '/home/atik/Desktop/collaborative_project/images.png'
+img = cv2.imread(path)
+imgContour = img.copy()
+
+# image processing no need color so we do  gray scale  color 
+# Edge detection  work by brightness
+# তাই প্রথমে color → grayscale বা single-channel করা হয়।
+
+imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+
+#GaussianBlur() image smooth করে, যাতে Canny() edge detector ভুল edge না ধরে।
+imgBlur = cv2.GaussianBlur(imgGray, (7,7), 1) # (7,7) besi blur and 1 is gaussion distribution 
+imgCanny = cv2.Canny(imgBlur, 50, 50) # canny for edge detecor #lower threshold and upper threshold
+
+
+
+contours, hierarchy = cv2.findContours(imgCanny, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+#print(contours)
+print("Total {} objects found :", format(len(contours)))
+for cnt in contours:
+    area = cv2.contourArea(cnt)
+    
+    if area > 10:
+        cv2.drawContours(imgContour, cnt , -1 , (255,0,0),3)
+        peri = cv2.arcLength(cnt, True)
+        #print(peri)
+
+        approx = cv2.approxPolyDP(cnt, 0.02*peri, True)
+        #print(len(approx))
+        bojCol = len(approx)
+        x,y,w,h = cv2.boundingRect(approx)
+cv2.imshow("Cnt", imgContour)
+cv2.imshow("img", img)
+cv2.waitKey(0)
+
